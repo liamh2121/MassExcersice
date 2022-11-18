@@ -1,24 +1,54 @@
 #include <iostream>
 #include <string.h>
+#include <regex>
 #include <fstream>
+#include <sstream>
 
 using namespace std;
 
-bool readXML(string*);
+const string FILENAME = "People.xml";
+
+bool readFile(string& fileContent);
+void showDetails(string& fileContent);
 
 int main() {
-	string regex = "[<].?[A-Za-z]+[>]\K[^<][A_Za-z]+"; //regular expreasion getting all the data from an xml file
 
+#ifdef _DEBUG //check for memory leak
+	//_CrtSetBreakAlloc(93);
+	_onexit(_CrtDumpMemoryLeaks);
+#endif
+
+	string fileContent;
+	if (readFile(fileContent))
+		showGetDetails(fileContent);
+	else
+		cout << "File Not Found";
 
 	return 0;
 }
 
-bool readXML(string* fileName) {
-
-	istream rFile;
-	if (rFile.open(fileName)) {
+bool readFile(string& fileContent) {
+	ifstream rFile(FILENAME.c_str());
+	
+	if (rFile) {
+		ostringstream ss;
+		ss << rFile.rdbuf();
+		fileContent = ss.str();
 		return true;
 	}
 	else
 		return false;
+}
+
+void showDetails(string& fileContent) {
+	regex regex("[<].?[A-Za-z]+[>]\K[^<][A-Za-z]+"); //regular expreasion gets all characters between <> </> tags
+	smatch matched;
+	
+	regex_search(fileContent, matched, regex);
+
+	cout << "There are " << matched.size()/2 << " people found";
+
+	for (int i = 0; i <= matched.size() / 2; i++) {
+		cout << matched.str(i) << " " << matched.str(i + 1) << endl;
+	}
 }
