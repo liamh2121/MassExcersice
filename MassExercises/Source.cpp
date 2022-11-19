@@ -43,12 +43,20 @@ bool readFile(string& fileContent) {
 void showDetails(string& fileContent) {
 	regex regex("[A-Za-z]+(?=<)"); //regular expreasion gets all characters between <> </> tags
 	smatch matched;
-	
+	regex_iterator<string::iterator> it(fileContent.begin(), fileContent.end(), regex);
+	regex_iterator<string::iterator> end;
+	int personCounter = 0;
 	regex_search(fileContent, matched, regex);
 
-	cout << "There are " << matched.size()/2 << " people found" << endl;
+	cout << "Peoples Names:" << endl;
 
-	for (int i = 0; i <= matched.size() / 2; i++) {
-		cout << matched.str(i) << " " << matched.str(i + 1) << endl;
+	while (it != end) {
+		cout << it->str() << " ";
+		it++;
+		personCounter++;
+		if (personCounter % 2 == 0)
+			cout << endl;
 	}
+
+	cout << "There are " << personCounter / 2 << " people found" << endl;
 }
