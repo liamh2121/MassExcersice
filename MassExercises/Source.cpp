@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const string FILENAME = "People.xml";
+const string* FILENAME = new string("People.xml"); //Filename/path
 
 bool readFile(string& fileContent);
 void showDetails(string& fileContent);
@@ -19,24 +19,25 @@ int main() {
 #endif
 
 	string fileContent;
-	if (readFile(fileContent))
+	if (readFile(fileContent))  //if the xml file is successfully read then print details
 		showDetails(fileContent);
-	else
+	else //else give error message and end program
 		cout << "File Not Found";
 
+	delete FILENAME;
 	return 0;
 }
 
 bool readFile(string& fileContent) {
-	ifstream rFile(FILENAME.c_str());
+	ifstream rFile(FILENAME->c_str());
 	
-	if (rFile) {
+	if (rFile) { //if the file is read then put it into a string stream to load into the fileContent string
 		ostringstream ss;
 		ss << rFile.rdbuf();
 		fileContent = ss.str();
 		return true;
 	}
-	else
+	else //else reuturn function failed
 		return false;
 }
 
@@ -50,11 +51,11 @@ void showDetails(string& fileContent) {
 
 	cout << "Peoples Names:" << endl;
 
-	while (it != end) {
+	while (it != end) { //while not at the end of the iterator print the current value and increment iterator
 		cout << it->str() << " ";
 		it++;
 		personCounter++;
-		if (personCounter % 2 == 0)
+		if (personCounter % 2 == 0) //if first and last name have been printed then start a new line
 			cout << endl;
 	}
 
